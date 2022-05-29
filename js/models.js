@@ -223,7 +223,7 @@ class User {
     })
   }
 
-  /**Remove a selected story
+  /**Remove a selected story from favorites
    * 
    * 
    */

@@ -31,29 +31,29 @@ function generateStoryMarkup(story) {
   if(favoriteIDs.has(`${story.storyId}`)){
     return $(`
       <li id="${story.storyId}">
+        <i class="fa-solid fa-heart"></i>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
         <small class="story-hostname">(${hostName})</small>
-        <i class="fa-solid fa-heart"></i>
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
-        <a class='storyBtn'><small>edit</small></a>
-        <a class='storyBtn'><small>remove</small></a>
+        <a class='storyBtn' id='editBtn' data-toggle="modal" data-target="#editStoryModal"><small>edit</small></a>
+        <a class='storyBtn' id='removeBtn'><small>remove</small></a>
       </li>
     `);
   }
-  //If it's not favoriated the list item will have the hollow heart icon
+  //If it's not favorited the list item will have the hollow heart icon
   return $(`
       <li id="${story.storyId}">
+        <i class="fa-regular fa-heart"></i>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
         <small class="story-hostname">(${hostName})</small>
-        <i class="fa-regular fa-heart"></i>
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
-        <a class='storyBtn' id='editBtn'><small>edit</small></a>
+        <a class='storyBtn' id='editBtn' data-toggle="modal" data-target="#editStoryModal"><small>edit</small></a>
         <a class='storyBtn' id='removeBtn'><small>remove</small></a>
       </li>
     `);
@@ -105,28 +105,17 @@ async function submitStory(evt){
 
   await StoryList.addStory(currentUser,{author,title,url});
   $storyForm.trigger("reset");
+  location.reload();
 }
 
 $storyForm.on('submit',submitStory);
-
-
-//favorites event handler
-$('#nav-favorites').on('click', async ()=>{
-
-  //update the currentUser to get an updated list of favorites from the API
-  const token = localStorage.getItem("token");
-  const username = localStorage.getItem("username");
-  currentUser = await User.loginViaStoredCredentials(token, username);
-
-  putStoriesOnPage(currentUser.favorites)
-});
 
 
 /** Removes a story from the DOM and API
  * 
  */
 
-async function removeStory(evt){
+async function removeStory(){
   //get the storyID from the parent LI  
   const storyID = $(this).parent().attr('id');
 
@@ -147,3 +136,55 @@ async function removeStory(evt){
 
 //Click handler for the remove button
 $allStoriesList.on('click','#removeBtn', removeStory);
+
+/**Send an API request to update a story
+ * 
+ * storyID = string
+ * editObj = Object containing the story properties being edited {author, title, url}
+ * 
+*/
+async function editStory(storyID,editObj){
+  await axios({
+    method: 'patch',
+    url: `https://hack-or-snooze-v3.herokuapp.com/stories/${storyID}`,
+    data:{
+      token: currentUser.loginToken,
+      story:{...editObj}
+    }
+  })
+}
+
+/**Takes values from the Edit Form and sends an edit story API request
+ * 
+ * 
+ */
+
+async function editStorySubmit(){
+  const storyID = $editForm.data('storyID');
+  let storyEdits = {};
+  const title = $('#edit-story-title').val();
+  const author = $('#edit-story-author').val();
+  const url = $('#edit-story-url').val();
+
+  //only add in values in the form that are not empty. Values will be falsey if its an empty string
+  //values added in via destructuring
+  if(title) storyEdits = {...storyEdits,title};
+  if(author) storyEdits = {...storyEdits,author};
+  if(url) storyEdits = {...storyEdits,url};
+  //send API request to edit story
+  await editStory(storyID,storyEdits);
+  //refresh the page to show edits
+  location.reload();
+}
+
+//Clicking the edit button will update the Edit Form to have an ID equal to the storyID for the parent LI
+$allStoriesList.on('click','#editBtn', function(){
+  //get the story ID of the parent LI
+  const storyID = $(this).parent().attr('id');
+  //set the Edit Form ID
+  $editForm.data('storyID', storyID);
+});
+
+
+// Event handler for submitting the edit form
+$editForm.on('submit',editStorySubmit);

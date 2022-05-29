@@ -14,10 +14,7 @@ function navAllStories(evt) {
 
 $body.on("click", "#nav-all", async()=>{
   //update the currentUser to get an updated list of favorites from the API
-  const token = localStorage.getItem("token");
-  const username = localStorage.getItem("username");
-  currentUser = await User.loginViaStoredCredentials(token, username);
-
+  storyList = await StoryList.getStories();
   navAllStories();
 });
 
@@ -50,3 +47,15 @@ function navShowSubmitForm(){
 }
 
 $navSubmit.on("click", navShowSubmitForm);
+
+//favorites event handler
+$('#nav-favorites').on('click', async ()=>{
+
+  //update the currentUser to get an updated list of favorites from the API
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username");
+  currentUser = await User.loginViaStoredCredentials(token, username);
+  hidePageComponents();
+  putStoriesOnPage(currentUser.favorites);
+
+});
