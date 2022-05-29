@@ -73,8 +73,22 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  async addStory( /* user, newStory */) {
-    // UNIMPLEMENTED: complete this function!
+  static async addStory( {loginToken}, {author,title,url}) {
+    const response = await axios({
+      method: 'post',
+      url:'https://hack-or-snooze-v3.herokuapp.com/stories',
+      data:{
+        token: loginToken,
+        story: {
+          author,
+          title,
+          url,
+        }
+      }
+    })
+
+    const newStory = response.data.story;
+    return new Story(newStory);
   }
 }
 
@@ -192,5 +206,35 @@ class User {
       console.error("loginViaStoredCredentials failed", err);
       return null;
     }
+  }
+
+  /**Add a selected story as a favorite.
+   * 
+   * 
+   * 
+   */
+  static async addFavorite({username, loginToken},storyID){
+    await axios({
+      method:'post',
+      url: `https://hack-or-snooze-v3.herokuapp.com/users/${username}/favorites/${storyID}`,
+      data: {
+        token: loginToken,
+      }
+    })
+  }
+
+  /**Remove a selected story
+   * 
+   * 
+   */
+
+  static async removeFavorite({username, loginToken},storyID){
+    await axios({
+      method:'delete',
+      url: `https://hack-or-snooze-v3.herokuapp.com/users/${username}/favorites/${storyID}`,
+      data: {
+        token: loginToken,
+      }
+    })
   }
 }

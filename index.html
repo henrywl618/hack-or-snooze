@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="css/user.css">
   <link rel="stylesheet" href="css/stories.css">
   <link rel="stylesheet" href="css/nav.css">
+  <script src="https://kit.fontawesome.com/5addaf7aaa.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -36,6 +37,12 @@
 <nav>
   <div class="navbar-brand">
     <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
+  </div>
+  <div>
+    <a class="nav-link" href="#" id="nav-submit">Submit</a>
+  </div>
+  <div>
+    <a class="nav-link" href="#" id="nav-favorites">Favorites</a>
   </div>
   <div class="nav-right">
     <a class="nav-link" href="#" id="nav-login">login/signup</a>
@@ -93,6 +100,28 @@
       <input id="signup-password" autocomplete="new-password" type="password">
     </div>
     <button type="submit">create account</button>
+  </form>
+</section>
+
+<!--Create Story Form-->
+<section>
+  <form 
+      action="#"
+      id="createStoryForm"
+      class="hidden">
+      <div class="title-input">
+        <label for="story-title">title</label>
+        <input id="story-title">
+      </div>
+      <div class="author-input">
+        <label for="story-author">author</label>
+        <input id="story-author">
+      </div>
+      <div class="url-input">
+        <label for="story-url">url</label>
+        <input id="story-url" type="url">
+      </div>
+      <button type="submit">submit</button>
   </form>
 </section>
 

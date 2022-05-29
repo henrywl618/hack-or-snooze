@@ -3,6 +3,7 @@
 // global to hold the User instance of the currently-logged-in user
 let currentUser;
 
+
 /******************************************************************************
  * User login/signup/login
  */
@@ -114,3 +115,4 @@ function updateUIOnUserLogin() {
 
   updateNavOnLogin();
 }
+

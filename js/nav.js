@@ -9,10 +9,17 @@
 function navAllStories(evt) {
   console.debug("navAllStories", evt);
   hidePageComponents();
-  putStoriesOnPage();
+  putStoriesOnPage(storyList.stories);
 }
 
-$body.on("click", "#nav-all", navAllStories);
+$body.on("click", "#nav-all", async()=>{
+  //update the currentUser to get an updated list of favorites from the API
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username");
+  currentUser = await User.loginViaStoredCredentials(token, username);
+
+  navAllStories();
+});
 
 /** Show login/signup on click on "login" */
 
@@ -34,3 +41,12 @@ function updateNavOnLogin() {
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
+
+/** Shows the form to submit a new story */
+
+function navShowSubmitForm(){
+  hidePageComponents();
+  $storyForm.show();
+}
+
+$navSubmit.on("click", navShowSubmitForm);
