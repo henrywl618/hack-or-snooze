@@ -24,8 +24,32 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
-    // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    // UNIMPLEMENTED: complete this function!'
+    let endIndex;
+    let hosturl = this.url;
+
+    //removes the protocol and www. from the url
+    hosturl = hosturl.replace('http://','');
+    hosturl = hosturl.replace('https://','');
+    hosturl = hosturl.replace('www.','');
+    console.log(hosturl);
+    
+    // get the index of the character after the top level domain of the url
+    if(hosturl.includes('.com')){
+      endIndex = hosturl.indexOf('.com') + 4;
+    } 
+    else if(hosturl.includes('.org')){
+      endIndex = hosturl.indexOf('.org') + 4;
+    } 
+    else if(hosturl.includes('.net')){
+      endIndex = hosturl.indexOf('.net') + 4;
+    } 
+   else if(hosturl.includes('.gov')){
+      endIndex = hosturl.indexOf('.gov') + 4;
+    } 
+
+    //Returns the hostname
+    return hosturl.slice(0,endIndex);
   }
 }
 
